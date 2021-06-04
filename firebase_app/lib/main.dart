@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Flutter CRUD with Firebase"),
+        title: Text("Data Penduduk Sederhana"),
       ),
       body: Container(
         padding: EdgeInsets.all(4.0),
@@ -197,6 +197,43 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
+            StreamBuilder(
+              stream: Firestore.instance.collection("CitizenData").snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot documentSnapshot =
+                          snapshot.data.documents[index];
+                      return Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(documentSnapshot["citizenName"]),
+                          ),
+                          Expanded(
+                            child:
+                                Text(documentSnapshot["citizenId"].toString()),
+                          ),
+                          Expanded(
+                            child: Text(documentSnapshot["citizenVillage"]),
+                          ),
+                          Expanded(
+                            child: Text(documentSnapshot["citizenAddress"]),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  return Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            )
             // StreamBuilder(
             //   stream: Firestore.instance.collection("CitizenData").snapshots(),
             //   builder: (context, snapshot) {
